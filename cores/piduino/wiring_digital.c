@@ -21,6 +21,10 @@
 #include "bcm2835_registers.h"
 
 void pinMode(uint8_t pin, uint8_t mode){
+    if(bcmreg_st == NULL) {
+        printf("pinMode no raspi, skipping\n");
+        return;
+    }
     GPFSEL(pin) &= ~(0x07 << GPFSELB(pin));//clear gpio function
     GPFSEL(pin) |= ((mode & 0x07) << GPFSELB(pin));//set function to pin
     if((mode & 0x07) == 0){//PULLUP/PULLDOWN
