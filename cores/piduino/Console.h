@@ -55,7 +55,7 @@ int console_available(void);
 #include "Stream.h"
 class BridgeClass;
 
-class LinuxConsole : public Stream{
+class LinuxConsole : public HardwareSerial {
   protected:
     
   public:
@@ -64,19 +64,19 @@ class LinuxConsole : public Stream{
     void noBuffer(){}
     bool connected(){return true;}
     
-    inline LinuxConsole(){}
-    void begin();
-    inline void begin(uint32_t baud __attribute__((unused))){}
-    void end();
+    virtual LinuxConsole(){}
+    virtual void begin();
+    virtual void begin(uint32_t baud __attribute__((unused))){}
+    virtual void end();
     virtual int available(void);
     virtual int peek(void);
     virtual int read(void);
     virtual void flush(void);
     virtual size_t write(uint8_t);
-    inline size_t write(unsigned long n) { return write((uint8_t)n); }
-    inline size_t write(long n) { return write((uint8_t)n); }
-    inline size_t write(unsigned int n) { return write((uint8_t)n); }
-    inline size_t write(int n) { return write((uint8_t)n); }
+    virtual size_t write(unsigned long n) { return write((uint8_t)n); }
+    virtual size_t write(long n) { return write((uint8_t)n); }
+    virtual size_t write(unsigned int n) { return write((uint8_t)n); }
+    virtual size_t write(int n) { return write((uint8_t)n); }
     using Print::write; // pull in write(str) and write(buf, size) from Print
     operator bool() { return true; }
 };
