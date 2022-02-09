@@ -60,11 +60,12 @@ class LinuxConsole : public HardwareSerial {
     
   public:
     LinuxConsole(BridgeClass &_b __attribute__((unused))){}
+    LinuxConsole(){}
+
     void buffer(uint8_t size __attribute__((unused))){}
     void noBuffer(){}
     bool connected(){return true;}
     
-    virtual LinuxConsole(){}
     virtual void begin();
     virtual void begin(uint32_t baud __attribute__((unused))){}
     virtual void end();
