@@ -21,10 +21,7 @@
 #include "bcm2835_registers.h"
 
 void pinMode(uint8_t pin, uint8_t mode){
-    if(bcmreg_st == NULL) {
-        printf("pinMode no raspi, skipping\n");
-        return;
-    }
+#ifdef RASPBERRYPI
     GPFSEL(pin) &= ~(0x07 << GPFSELB(pin));//clear gpio function
     GPFSEL(pin) |= ((mode & 0x07) << GPFSELB(pin));//set function to pin
     if((mode & 0x07) == 0){//PULLUP/PULLDOWN
@@ -45,13 +42,13 @@ void pinMode(uint8_t pin, uint8_t mode){
             GPPUDCLK1 = 0;
         }
     }
+#else
+    printf("pinMode no raspi, skipping\n");
+#endif
 }
 
 void digitalWrite(uint8_t pin, uint8_t val){
-    if(bcmreg_st == NULL) {
-        printf("digitalWrite no raspi, skipping\n");
-        return;
-    }
+#ifdef RASPBERRYPI
     if(pin < 32){
         if(val) {
             GPSET0 = _BV(pin);
@@ -65,17 +62,22 @@ void digitalWrite(uint8_t pin, uint8_t val){
             GPCLR1 = _BV(pin - 32);
         }
     }
+#else
+    printf("digitalWrite no raspi, skipping\n");
+    return;
+#endif
 }
 
 int digitalRead(uint8_t pin){
-    if(bcmreg_st == NULL) {
-        printf("digitalRead no raspi, skipping\n");
-        return;
-    }
+#ifdef RASPBERRYPI
     if(pin < 32){
         return (GPLEV0 & _BV(pin)) != 0;
     } else if(pin > 45) {
         return 0;
     }
     return (GPLEV1 & _BV(pin - 32)) != 0;
+#else
+    printf("digitalRead no raspi, skipping\n");
+    return 0;
+#endif
 }

@@ -47,22 +47,22 @@ void delayMicroseconds(uint32_t m){
 
 
 unsigned long millis() {
-    if(bcmreg_st == NULL) {
+#ifdef RASPBERRYPI
         return (unsigned long)(STCV / 1000);
-    } else {
+#else
         struct timespec ts;
         clock_gettime(CLOCK_BOOTTIME, &ts);
         return ts.tv_sec*1000 + ts.tv_nsec / 1000000;
-    }
+#endif
 }
 unsigned long micros() {
-    if(bcmreg_st == NULL) {
-        return (unsigned long)(STCV);
-    } else {
-        struct timespec ts;
-        clock_gettime(CLOCK_BOOTTIME, &ts);
-        return ts.tv_sec*1000000 + ts.tv_nsec / 1000;
-    }
+#ifdef RASPBERRYPI
+    return (unsigned long)(STCV);
+#else
+    struct timespec ts;
+    clock_gettime(CLOCK_BOOTTIME, &ts);
+    return ts.tv_sec*1000000 + ts.tv_nsec / 1000;
+#endif
 }
 
 void analogReference(uint8_t mode __attribute__((unused))){}
@@ -180,6 +180,7 @@ void uninit(){
  * @return Return 0 on success and not 1 on failure.
  */
 int init(){
+#ifdef RASPBERRYPI
     RASPBERRY_PI_INFO_T info;
     getRaspberryPiInformation(&info);
 
@@ -190,11 +191,14 @@ int init(){
     }
     if(info.revisionNumber >= PINMASKS_LEN || !rpi_model_pinmasks[info.revisionNumber]){
         fprintf(stderr, "UNKNOWN_REVISION: 0x%08X, MODEL: 0x%08X\n", info.revisionNumber, info.model);
-        // return 1;
+        return 1;
     }
     if(map_registers(offset)) {
-        // return 1;
+        return 1;
     }
     srand(time(NULL));
     return 0;
+#else
+    return 0;
+#endif
 }
