@@ -48,6 +48,10 @@ void pinMode(uint8_t pin, uint8_t mode){
 }
 
 void digitalWrite(uint8_t pin, uint8_t val){
+    if(bcmreg_st == NULL) {
+        printf("digitalWrite no raspi, skipping\n");
+        return;
+    }
     if(pin < 32){
         if(val) {
             GPSET0 = _BV(pin);
@@ -64,6 +68,10 @@ void digitalWrite(uint8_t pin, uint8_t val){
 }
 
 int digitalRead(uint8_t pin){
+    if(bcmreg_st == NULL) {
+        printf("digitalRead no raspi, skipping\n");
+        return;
+    }
     if(pin < 32){
         return (GPLEV0 & _BV(pin)) != 0;
     } else if(pin > 45) {

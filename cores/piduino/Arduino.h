@@ -42,7 +42,7 @@ extern "C"{
 typedef void * PTHREAD;
 #define PWM_RANGE     0xFF
 
-void yield(void);
+// void yield(void);
 
 #define HIGH 0x1
 #define LOW  0x0
@@ -115,8 +115,8 @@ void yield(void);
 
 #define bit(b) (1UL << (b))
 
-#define micros() (unsigned long)(STCV)
-#define millis() (unsigned long)(STCV / 1000)
+extern unsigned long millis();
+extern unsigned long micros();
 
 typedef unsigned int word;
 typedef uint8_t boolean;
@@ -180,7 +180,7 @@ uint8_t   thread_running(pthread_t t);
 uint8_t   thread_equals(pthread_t t);
 void      thread_lock(int index);
 void      thread_unlock(int index);
-#define   yield() thread_yield()
+inline void yield() { thread_yield(); }
 
 //ToDo: move this to separate(private) header to be included only where necessary
 void uart_check_fifos();

@@ -45,6 +45,26 @@ void delayMicroseconds(uint32_t m){
     usleep(m);
 }
 
+
+unsigned long millis() {
+    if(bcmreg_st == NULL) {
+        return (unsigned long)(STCV / 1000);
+    } else {
+        struct timespec ts;
+        clock_gettime(CLOCK_BOOTTIME, &ts);
+        return ts.tv_sec*1000 + ts.tv_nsec / 1000000;
+    }
+}
+unsigned long micros() {
+    if(bcmreg_st == NULL) {
+        return (unsigned long)(STCV);
+    } else {
+        struct timespec ts;
+        clock_gettime(CLOCK_BOOTTIME, &ts);
+        return ts.tv_sec*1000000 + ts.tv_nsec / 1000;
+    }
+}
+
 void analogReference(uint8_t mode __attribute__((unused))){}
 int analogRead(uint8_t pin __attribute__((unused))){ return 0; }
 
@@ -170,11 +190,11 @@ int init(){
     }
     if(info.revisionNumber >= PINMASKS_LEN || !rpi_model_pinmasks[info.revisionNumber]){
         fprintf(stderr, "UNKNOWN_REVISION: 0x%08X, MODEL: 0x%08X\n", info.revisionNumber, info.model);
-        return 1;
+        // return 1;
     }
-    if(map_registers(offset))
-        return 1;
-
+    if(map_registers(offset)) {
+        // return 1;
+    }
     srand(time(NULL));
     return 0;
 }

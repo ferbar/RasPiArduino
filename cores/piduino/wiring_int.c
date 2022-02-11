@@ -31,7 +31,8 @@ static volatile uint64_t _pin_isr_reg = 0;
 static volatile uint64_t _pin_isr_last = 0;
 
 void *isr_executor_task(void *isr_num){
-    isr_handler_t *handler = &isr_handlers[(int)isr_num];
+    // isr_handler_t *handler = &isr_handlers[(int)isr_num];
+    isr_handler_t *handler = &isr_handlers[(long)isr_num];
     handler->fn();
     pthread_exit(NULL);
 }
