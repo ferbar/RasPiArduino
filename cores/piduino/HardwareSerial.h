@@ -44,6 +44,7 @@ class HardwareSerial : public Stream {
 
 #ifdef SERIAL_TO_CONSOLE
 extern HardwareSerial Serial1;
+#include "Console.h"
 #define Serial Console
 #else
 extern HardwareSerial Serial;
